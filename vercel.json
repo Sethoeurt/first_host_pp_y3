@@ -1,8 +1,19 @@
 {
-    "rewrites": [
-        {
-            "source": "/(.*)",
-            "destination": "/src/app/page.tsx"
-        }
+    "version": 2,
+    "builds": [
+      {
+        "src": "pages/api/products/index.tsx",
+        "use": "@vercel/node"
+      }
+    ],
+    "env": {
+      "MONGODB_URI": "@mongodb_uri" 
+    },
+    "routes": [
+      {
+        "src": "/api/products",
+        "dest": "/pages/api/products/index.tsx"
+      }
     ]
-}
+  }
+  
