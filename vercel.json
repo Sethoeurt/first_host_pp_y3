@@ -7,13 +7,7 @@
       }
     ],
     "env": {
-      "MONGODB_URI": "@mongodb_uri" 
-    },
-    "routes": [
-      {
-        "src": "/api/products",
-        "dest": "/pages/api/products/index.tsx"
-      }
-    ]
+      "MONGODB_URI": "@mongodb_uri"
+    }
   }
   
