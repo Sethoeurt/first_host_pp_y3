@@ -2,8 +2,8 @@
     "version": 2,
     "builds": [
       {
-        "src": "pages/api/products/index.tsx",
-        "use": "@vercel/node"
+        "src": "next.config.js",
+        "use": "@vercel/next"
       }
     ],
     "env": {
