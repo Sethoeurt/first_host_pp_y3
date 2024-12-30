@@ -57,6 +57,12 @@ export async function POST(request: Request): Promise<NextResponse> {
   try {
     await connectDB();
     const body = await request.json();
+    
+    // Validate required fields
+    if (!body.name || !body.price || !body.description || !body.image) {
+      return NextResponse.json({ error: 'Missing required fields: name, price, description, image' }, { status: 400 });
+    }
+
     const product = await Product.create(body);
     return NextResponse.json({
       message: 'Product created successfully',
@@ -83,12 +89,18 @@ export async function PUT(request: Request): Promise<NextResponse> {
     }
 
     const body = await request.json();
-    const product = await Product.findByIdAndUpdate(id, body, { new: true });
     
+    // Validate required fields
+    if (!body.name && !body.price && !body.description && !body.image) {
+      return NextResponse.json({ error: 'At least one field must be provided to update' }, { status: 400 });
+    }
+
+    const product = await Product.findByIdAndUpdate(id, body, { new: true });
+
     if (!product) {
       return NextResponse.json({ error: 'Product not found' }, { status: 404 });
     }
-    
+
     return NextResponse.json({
       message: 'Product updated successfully',
       product: product
