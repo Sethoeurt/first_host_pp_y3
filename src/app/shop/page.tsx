@@ -14,15 +14,20 @@ interface IProduct {
 export default function ShopPage() {
   const [products, setProducts] = useState<IProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await fetch("/api/products");
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
         setProducts(data.products);
       } catch (error) {
         console.error("Error fetching products:", error);
+        setError("Failed to load products. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -32,10 +37,23 @@ export default function ShopPage() {
   }, []);
 
   if (loading) {
-    return <div className="min-h-screen flex items-center justify-center">
-      <p>Loading products...</p>
-    </div>;
+    return (
+      <div className="min-h-screen p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 6 }).map((_, index) => (
+          <div key={index} className="bg-gray-200 animate-pulse rounded-lg h-80"></div>
+        ))}
+      </div>
+    );
   }
+
+  if (error) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-red-500">{error}</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
       <main className="container mx-auto p-8">
@@ -43,11 +61,10 @@ export default function ShopPage() {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {products.map((product) => (
-            <div
+            <article
               key={product._id}
               className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full"
             >
-              {/* Image container with fixed height */}
               <div className="relative h-64 w-full">
                 <Image
                   src={product.image}
@@ -57,26 +74,13 @@ export default function ShopPage() {
                   className="object-cover"
                 />
               </div>
-
-              {/* Content container with fixed heights for title and description */}
               <div className="p-6 flex flex-col flex-1">
-                <div className="h-14">
-                  {" "}
-                  {/* Fixed height for title */}
-                  <h3 className="text-xl font-semibold text-gray-800 line-clamp-2">
-                    {product.name}
-                  </h3>
-                </div>
-
-                <div className="h-20 mb-4">
-                  {" "}
-                  {/* Fixed height for description */}
-                  <p className="text-gray-600 text-sm line-clamp-4">
-                    {product.description}
-                  </p>
-                </div>
-
-                {/* Price and cart button */}
+                <h3 className="text-xl font-semibold text-gray-800 line-clamp-2 h-14">
+                  {product.name}
+                </h3>
+                <p className="text-gray-600 text-sm line-clamp-4 h-20 mb-4">
+                  {product.description}
+                </p>
                 <div className="mt-auto flex items-center justify-between">
                   <span className="text-2xl font-bold text-purple-600">
                     ${product.price}
@@ -86,7 +90,7 @@ export default function ShopPage() {
                   </button>
                 </div>
               </div>
-            </div>
+            </article>
           ))}
         </div>
       </main>
