@@ -16,6 +16,10 @@ export default function ShopPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const imageLoader = ({ src }: { src: string }) => {
+    return src;
+  };
+
   const fetchProducts = async () => {
     try {
       const response = await fetch("/api/products");
@@ -76,11 +80,12 @@ export default function ShopPage() {
                 key={uniqueKey}
                 className="bg-white rounded-lg shadow-lg overflow-hidden flex flex-col h-full"
               >
-                <div className="relative h-64 w-full">
+                <div className="relative h-64 w-full bg-gray-100">
                   <Image
                     src={product.image}
                     alt={product.name}
                     fill
+                    loader={imageLoader}
                     quality={100}
                     className="object-cover"
                     sizes="(max-width: 640px) 100vw, 50vw"
